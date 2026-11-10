@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Panel de la carta · Nápoles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#17110e;--card:#241b16;--card2:#2d221c;--line:#3a2c24;--red:#e0352b;--cheese:#f6c445;--cream:#f7ecd9;--muted:#b9a898;--basil:#5aa653}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--cream);font-family:Nunito,system-ui,sans-serif;font-size:15px;line-height:1.4}
+  button,input,select,textarea{font:inherit;color:inherit}
+  button{cursor:pointer;border:0;background:none}
+  .wrap{max-width:980px;margin:0 auto;padding:0 14px}
+  header{position:sticky;top:0;z-index:20;background:rgba(23,17,14,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0}
+  .hd h1{margin:0;font-family:"Lilita One";font-weight:400;font-size:22px;color:var(--red);flex:1;min-width:180px}
+  .hd h1 small{display:block;font-family:Nunito;font-size:12.5px;color:var(--muted);font-weight:700}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);font-weight:800;font-size:14px;text-decoration:none;white-space:nowrap}
+  a.btn{color:var(--cream)}
+  .btn.pri{background:var(--red);border-color:var(--red);color:#fff}
+  .btn.pri:disabled{opacity:.5;cursor:default}
+  .btn.sm{padding:6px 10px;font-size:13px;border-radius:8px}
+  .btn.dan{color:#ff8a80}
+  .tabs{display:flex;gap:6px;padding:0 0 10px;overflow-x:auto}
+  .tab{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-weight:800;font-size:14px;color:var(--muted);white-space:nowrap}
+  .tab.on{background:var(--cream);color:#2a1a08;border-color:var(--cream)}
+  .banner{background:#3b2a12;color:var(--cheese);font-weight:700;font-size:13.5px;padding:8px 14px;text-align:center}
+  .dirty{color:var(--cheese);font-weight:800;font-size:13px}
+  main{padding:18px 0 80px}
+  h2{font-family:"Lilita One";font-weight:400;font-size:24px;margin:22px 0 6px;color:var(--cream)}
+  h2:first-child{margin-top:0}
+  .help{color:var(--muted);margin:0 0 12px;font-size:14px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+  .box.cat{border-color:#5a4436;background:#1f1713}
+  .cat-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+  .item{display:grid;grid-template-columns:92px 1fr;gap:12px;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+  .item.off{opacity:.65}
+  .thumb{width:92px;height:92px;border-radius:12px;background:radial-gradient(circle,#3a2b22,#1a120e);display:grid;place-items:center;overflow:hidden}
+  .thumb svg{width:88%;height:88%}.thumb img{width:100%;height:100%;object-fit:cover}
+  .photo-btns{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+  .photo-btns label,.photo-btns button{font-size:12.5px;font-weight:800;text-align:center;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--card);cursor:pointer}
+  .photo-btns input{display:none}
+  .fields{display:grid;gap:8px;min-width:0}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .g3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
+  label.fl{display:grid;gap:3px;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+  input.f,select.f,textarea.f{width:100%;border-radius:10px;border:1.5px solid var(--line);background:#1c1511;padding:9px 11px;outline:none;font-size:15px;text-transform:none;letter-spacing:0;color:var(--cream);font-weight:600}
+  input.f:focus,select.f:focus,textarea.f:focus{border-color:var(--cheese)}
+  .tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .sw{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:14px;cursor:pointer;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card)}
+  .sw input{accent-color:var(--red);width:18px;height:18px}
+  .sw.on{border-color:#a33;background:#3a1f1a}
+  table{width:100%;border-collapse:collapse}
+  td,th{padding:6px;text-align:left;vertical-align:middle}
+  th{font-size:12px;color:var(--muted);text-transform:uppercase}
+  .opts-list{display:grid;gap:6px}
+  .opt-row{display:grid;grid-template-columns:1fr 130px auto;gap:6px}
+  .prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+  .add{width:100%;padding:12px;border-radius:12px;border:1.5px dashed #5a4436;color:var(--cheese);font-weight:800}
+  .login{max-width:380px;margin:60px auto;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;display:grid;gap:12px}
+  .login h1{margin:0;font-family:"Lilita One";font-weight:400;color:var(--red);font-size:26px}
+  .err{color:#ff8a80;font-weight:700;font-size:14px}
+  .toast{position:fixed;left:50%;bottom:20px;z-index:60;transform:translate(-50%,200%);background:var(--cream);color:#2a1a08;font-weight:800;padding:12px 18px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .25s;max-width:92vw;text-align:center}
+  .toast.show{transform:translate(-50%,0)}
+  @media (max-width:560px){.item{grid-template-columns:1fr}.thumb{width:100%;height:140px}.g2,.g3{grid-template-columns:1fr}.photo-btns{flex-direction:row}.photo-btns>*{flex:1}}
+</style>
+</head>
+<body>
+<div id="app"><p style="text-align:center;padding:60px;color:#b9a898;font-weight:700">Cargando panel…</p></div>
+<div class="toast" id="toast"></div>
+
+<script src="firebase-config.js"></script>
+<script src="datos-ejemplo.js"></script>
+<script src="comun.js"></script>
+<script>
+const {esc,money,store,clone,hourTxt}=NAPOLES;
+const $=s=>document.querySelector(s);
+let D=null, FOTOS={}, dirtyFotos=new Set(), deletedFotos=new Set(), dirty=false, tab="pizzas", USER=null, saving=false;
+const FB=NAPOLES.hasFirebase();
+function toast(t,ms){const el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove("show"),ms||2200)}
+const uid=p=>(p||"p")+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+
+/* ---------- Acceso a rutas: "pizzas.sabores.2.nombre" ---------- */
+function ref(path){const ks=path.split(".");let o=D;for(let i=0;i<ks.length-1;i++)o=o[ks[i]];return [o,ks[ks.length-1]]}
+function get(path){return path.split(".").reduce((o,k)=>o==null?o:o[k],D)}
+function set(path,v){const [o,k]=ref(path);o[k]=v;markDirty()}
+function markDirty(){dirty=true;const d=$("#dirty");if(d)d.textContent="● Cambios sin guardar";const b=$("#btnSave");if(b)b.disabled=false}
+window.addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue=""}});
+
+/* ---------- Normalizar datos (por si vienen incompletos) ---------- */
+function norm(c){
+  c=c||{};c.negocio=c.negocio||{};c.sedes=c.sedes||[];c.pizzas=c.pizzas||{};c.categorias=c.categorias||[];
+  const p=c.pizzas;p.tamanos=p.tamanos||[];p.sabores=p.sabores||[];p.especiales=p.especiales||[];
+  p.especiales.forEach(e=>e.precios=e.precios||{});
+  c.categorias.forEach(k=>k.items=k.items||[]);
+  if(!c.negocio.pagos)c.negocio.pagos=["Efectivo"];
+  return c;
+}
+
+/* ---------- Pantallas ---------- */
+function renderLogin(msg){
+  $("#app").innerHTML=`<form class="login" id="loginF">
+    <h1>Panel de la carta</h1>
+    <p class="help" style="margin:0">Entra con tu usuario del aplicativo (correo y contraseña).</p>
+    <input class="f" id="lEmail" type="email" placeholder="Correo" autocomplete="username" required>
+    <input class="f" id="lPass" type="password" placeholder="Contraseña" autocomplete="current-password" required>
+    <button class="btn pri" style="justify-content:center;padding:12px">Entrar</button>
+    <div class="err" id="lErr">${esc(msg||"")}</div></form>`;
+  $("#loginF").onsubmit=async e=>{e.preventDefault();$("#lErr").textContent="Entrando…";
+    try{const f=await NAPOLES.firebase();await f.authM.signInWithEmailAndPassword(f.auth,$("#lEmail").value.trim(),$("#lPass").value)}
+    catch(err){$("#lErr").textContent="Correo o contraseña incorrectos."}};
+}
+
+function art(o){return NAPOLES.art(o,FOTOS)}
+function input(path,ph,type){const v=get(path);return `<input class="f" data-bind="${path}" ${type==="num"?'inputmode="numeric" data-num="1"':""} value="${esc(v==null?"":v)}" placeholder="${esc(ph||"")}">`}
+function tools(list,i,n){return `<button class="btn sm" data-act="up" data-list="${list}" data-i="${i}" ${i===0?"disabled":""} title="Subir">↑</button><button class="btn sm" data-act="down" data-list="${list}" data-i="${i}" ${i===n-1?"disabled":""} title="Bajar">↓</button><button class="btn sm dan" data-act="del" data-list="${list}" data-i="${i}">Borrar</button>`}
+function photoBtns(path,o){return `<div class="photo-btns"><label>📷 ${o.foto&&FOTOS[o.foto]?"Cambiar":"Subir"} foto<input type="file" accept="image/*" data-photo="${path}"></label>${o.foto&&FOTOS[o.foto]?`<button data-act="nophoto" data-path="${path}">Quitar foto</button>`:""}</div>`}
+function artSelect(path,o){const t=(o.art&&o.art.t)||"bowl";return `<label class="fl">Ilustración (si no hay foto)<select class="f" data-art="${path}">${Object.entries(NAPOLES.ARTES).map(([k,v])=>`<option value="${k}" ${k===t?"selected":""}>${v}</option>`).join("")}</select></label>`}
+function agotado(path,o){return `<label class="sw ${o.agotado?"on":""}"><input type="checkbox" data-bool="${path}.agotado" ${o.agotado?"checked":""}> Agotado hoy</label>`}
+
+function itemEditor(list,i,n,o,kind){
+  const path=`${list}.${i}`;
+  let extra="";
+  if(kind==="esp"){
+    extra=`<label class="fl">Precio por tamaño (vacío = no se vende en ese tamaño)</label><div class="prices">${D.pizzas.tamanos.map(t=>`<label class="fl">${esc(t.nombre)}<input class="f" inputmode="numeric" data-price="${path}" data-size="${esc(t.id)}" value="${o.precios[t.id]!=null?o.precios[t.id]:""}" placeholder="—"></label>`).join("")}</div>`;
+  }else if(kind==="item"){
+    const has=o.opciones&&o.opciones.length;
+    extra=has?`<label class="fl">Opciones / tamaños con su precio</label><div class="opts-list">${o.opciones.map((x,j)=>`<div class="opt-row">${input(`${path}.opciones.${j}.nombre`,"Ej: 400 ml")}${input(`${path}.opciones.${j}.precio`,"Precio","num")}<button class="btn sm dan" data-act="del" data-list="${path}.opciones" data-i="${j}">✕</button></div>`).join("")}
+      <div class="tools"><button class="btn sm" data-act="addopt" data-path="${path}">+ Agregar opción</button><button class="btn sm" data-act="noopts" data-path="${path}">Usar un solo precio</button></div></div>`
+      :`<div class="g2"><label class="fl">Precio${input(`${path}.precio`,"Ej: 14000","num")}</label><div style="align-self:end"><button class="btn sm" data-act="addopt" data-path="${path}">+ Tiene tamaños u opciones</button></div></div>`;
+  }
+  return `<div class="item ${o.agotado?"off":""}">
+    <div><div class="thumb">${art(o)}</div>${photoBtns(path,o)}</div>
+    <div class="fields">
+      <div class="g3"><label class="fl">Nombre${input(path+".nombre","Nombre del producto")}</label><label class="fl">Etiqueta${input(path+".tag","Ej: Nuevo")}</label>${kind==="sabor"||kind==="esp"?"<span></span>":artSelect(path,o)}</div>
+      <label class="fl">Descripción<textarea class="f" rows="2" data-bind="${path}.desc" placeholder="Ingredientes, gramaje…">${esc(o.desc||"")}</textarea></label>
+      ${extra}
+      <div class="tools">${agotado(path,o)}<span style="flex:1"></span>${tools(list,i,n)}</div>
+    </div></div>`;
+}
+
+function renderPizzas(){
+  const p=D.pizzas;
+  return `<h2>Tamaños de pizza</h2><p class="help">Todos los sabores normales valen lo mismo según el tamaño. "Sabores" es cuántos sabores se pueden combinar.</p>
+  <div class="box"><table><tr><th>Tamaño</th><th>Sabores</th><th>Precio</th><th></th></tr>
+    ${p.tamanos.map((t,i)=>`<tr><td>${input(`pizzas.tamanos.${i}.nombre`,"Nombre")}</td>
+      <td><select class="f" data-bind="pizzas.tamanos.${i}.sabores" data-num="1">${[1,2,3,4].map(n=>`<option ${+t.sabores===n?"selected":""}>${n}</option>`).join("")}</select></td>
+      <td>${input(`pizzas.tamanos.${i}.precio`,"Precio","num")}</td><td><div class="tools">${tools("pizzas.tamanos",i,p.tamanos.length)}</div></td></tr>`).join("")}
+  </table><button class="add" data-act="addsize" style="margin-top:8px">+ Agregar tamaño</button></div>
+  <h2>Sección de pizzas</h2>
+  <div class="box g2"><label class="fl">Título${input("pizzas.nombre","Pizzas")}</label><label class="fl">Texto debajo del título${input("pizzas.sub","Ej: Masa artesanal…")}</label></div>
+  <h2>Sabores (${p.sabores.length})</h2><p class="help">Se pueden combinar según el tamaño. Marca "Agotado hoy" si un sabor no está disponible.</p>
+  ${p.sabores.map((o,i)=>itemEditor("pizzas.sabores",i,p.sabores.length,o,"sabor")).join("")}
+  <button class="add" data-act="additem" data-list="pizzas.sabores" data-kind="pizza">+ Agregar sabor</button>
+  <h2>Sabores especiales (${p.especiales.length})</h2><p class="help">Tienen su propio precio y se preparan de un solo sabor (no se combinan).</p>
+  ${p.especiales.map((o,i)=>itemEditor("pizzas.especiales",i,p.especiales.length,o,"esp")).join("")}
+  <button class="add" data-act="additem" data-list="pizzas.especiales" data-kind="pizza">+ Agregar sabor especial</button>`;
+}
+function renderProductos(){
+  return `<h2>Categorías y productos</h2><p class="help">Cada categoría aparece como un botón en la barra de la carta, en este mismo orden.</p>
+  ${D.categorias.map((c,ci)=>`<div class="box cat">
+    <div class="cat-h"><div style="flex:1;min-width:200px" class="g2"><label class="fl">Categoría${input(`categorias.${ci}.nombre`,"Nombre de la categoría")}</label><label class="fl">Texto (opcional)${input(`categorias.${ci}.sub`,"")}</label></div><div class="tools">${tools("categorias",ci,D.categorias.length)}</div></div>
+    ${c.items.map((o,i)=>itemEditor(`categorias.${ci}.items`,i,c.items.length,o,"item")).join("")}
+    <button class="add" data-act="additem" data-list="categorias.${ci}.items" data-kind="bowl">+ Agregar producto a ${esc(c.nombre||"esta categoría")}</button>
+  </div>`).join("")}
+  <button class="add" data-act="addcat" style="border-color:var(--cheese)">+ Agregar categoría</button>`;
+}
+function renderNegocio(){
+  const n=D.negocio,hrs=[...Array(24).keys()];
+  return `<h2>Negocio</h2><div class="box fields">
+    <div class="g2"><label class="fl">Nombre${input("negocio.nombre","Nápoles Pizza")}</label><label class="fl">Lema${input("negocio.lema","")}</label></div>
+    <div class="g2"><label class="fl">Abre<select class="f" data-bind="negocio.abre" data-num="1">${hrs.map(h=>`<option value="${h}" ${+n.abre===h?"selected":""}>${hourTxt(h)}</option>`).join("")}</select></label>
+      <label class="fl">Cierra<select class="f" data-bind="negocio.cierra" data-num="1">${hrs.map(h=>`<option value="${h}" ${+n.cierra===h?"selected":""}>${hourTxt(h)}</option>`).join("")}</select></label></div>
+    <label class="fl">Formas de pago (una por línea)<textarea class="f" rows="4" data-lines="negocio.pagos">${esc((n.pagos||[]).join("\n"))}</textarea></label>
+    <label class="sw ${n.demo?"on":""}" style="justify-self:start"><input type="checkbox" data-bool="negocio.demo" ${n.demo?"checked":""}> Mostrar aviso "versión de prueba"</label>
+  </div>
+  <h2>Sedes y WhatsApp</h2><p class="help">La primera sede es la principal: recibe los domicilios cuando el cliente no elige sede. Escribe el celular de 10 dígitos.</p>
+  <div class="box">${D.sedes.map((s,i)=>`<div class="opt-row" style="grid-template-columns:1fr 170px auto;margin-bottom:8px">
+      ${input(`sedes.${i}.nombre`,"Nombre de la sede")}<input class="f" inputmode="numeric" data-wa="sedes.${i}.wa" value="${esc(String(s.wa||"").replace(/^57(?=\d{10}$)/,""))}" placeholder="3201234567">
+      <div class="tools">${tools("sedes",i,D.sedes.length)}</div></div>`).join("")}
+    <button class="add" data-act="addsede">+ Agregar sede</button></div>
+  <h2>Respaldo</h2><div class="box tools">
+    <button class="btn" data-act="copyjson">Copiar respaldo de la carta</button>
+    ${FB?"":`<button class="btn dan" data-act="reset">Volver a la carta de ejemplo</button>`}
+  </div>`;
+}
+
+function render(){
+  const y=window.scrollY;
+  $("#app").innerHTML=`
+  ${FB?"":`<div class="banner">Modo demo: aún no está conectado a Firebase. Los cambios se guardan solo en este navegador, para probar.</div>`}
+  <header><div class="wrap">
+    <div class="hd"><h1>Panel de la carta<small>${FB&&USER?esc(USER.email):"Nápoles"} · <span id="dirty" class="dirty">${dirty?"● Cambios sin guardar":""}</span></small></h1>
+      <a class="btn" href="index.html" target="_blank" rel="noopener">👁 Ver carta</a>
+      ${FB?`<button class="btn" data-act="logout">Salir</button>`:""}
+      <button class="btn pri" id="btnSave" ${dirty?"":"disabled"}>${saving?"Guardando…":"Guardar cambios"}</button></div>
+    <div class="tabs">${[["pizzas","🍕 Pizzas"],["productos","🍟 Otros productos"],["negocio","🏪 Negocio y sedes"]].map(([k,v])=>`<button class="tab ${tab===k?"on":""}" data-tab="${k}">${v}</button>`).join("")}</div>
+  </div></header>
+  <main class="wrap">${tab==="pizzas"?renderPizzas():tab==="productos"?renderProductos():renderNegocio()}</main>`;
+  window.scrollTo(0,y);
+}
+
+/* ---------- Fotos: se reducen antes de guardar ---------- */
+function resize(file){return new Promise((res,rej)=>{const img=new Image(),url=URL.createObjectURL(file);
+  img.onload=()=>{let max=700,q=.8,out;const cv=document.createElement("canvas");
+    for(let k=0;k<5;k++){const s=Math.min(1,max/Math.max(img.width,img.height));cv.width=Math.round(img.width*s);cv.height=Math.round(img.height*s);
+      cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);out=cv.toDataURL("image/jpeg",q);if(out.length<700000)break;max*=.8;q-=.08}
+    URL.revokeObjectURL(url);res(out)};
+  img.onerror=()=>rej(new Error("img"));img.src=url})}
+
+/* ---------- Eventos ---------- */
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.dataset.bind){let v=t.value;if(t.dataset.num)v=v===""?"":+String(v).replace(/\D/g,"");set(t.dataset.bind,v);
+    if(/\.nombre$/.test(t.dataset.bind)&&t.dataset.bind.startsWith("pizzas.tamanos"))markDirty()}
+  else if(t.dataset.price){const o=get(t.dataset.price),v=t.value.replace(/\D/g,"");if(v==="")delete o.precios[t.dataset.size];else o.precios[t.dataset.size]=+v;markDirty()}
+  else if(t.dataset.wa){const v=t.value.replace(/\D/g,"");set(t.dataset.wa,v.length===10?"57"+v:v)}
+  else if(t.dataset.lines){set(t.dataset.lines,t.value.split("\n").map(s=>s.trim()).filter(Boolean))}
+});
+document.addEventListener("change",async e=>{
+  const t=e.target;
+  if(t.dataset.bool){set(t.dataset.bool,t.checked);render()}
+  else if(t.dataset.art){const o=get(t.dataset.art);o.art={t:t.value};markDirty();render()}
+  else if(t.dataset.bind&&t.tagName==="SELECT"){render()}
+  else if(t.dataset.photo&&t.files&&t.files[0]){
+    try{toast("Procesando foto…");const data=await resize(t.files[0]);const o=get(t.dataset.photo);
+      if(o.foto){deletedFotos.add(o.foto);dirtyFotos.delete(o.foto)}
+      const id=uid("f_");FOTOS[id]=data;o.foto=id;dirtyFotos.add(id);deletedFotos.delete(id);markDirty();render();toast("Foto lista. Recuerda guardar.")}
+    catch(err){toast("No se pudo leer la imagen")}}
+});
+document.addEventListener("click",async e=>{
+  const t=e.target.closest("[data-act],[data-tab],#btnSave");if(!t)return;
+  if(t.dataset.tab){tab=t.dataset.tab;window.scrollTo(0,0);render();return}
+  if(t.id==="btnSave"){save();return}
+  const a=t.dataset.act,list=t.dataset.list,i=+t.dataset.i;
+  if(a==="up"||a==="down"){const arr=get(list),j=a==="up"?i-1:i+1;if(j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];markDirty();render()}
+  else if(a==="del"){const arr=get(list),o=arr[i],name=(o&&o.nombre)||"este elemento";
+    if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="¿Seguro? Toca otra vez";setTimeout(()=>{if(t.isConnected){t.dataset.confirm="";t.textContent=list.endsWith("opciones")?"✕":"Borrar"}},3000);return}
+    if(list==="sedes"&&arr.length<=1){toast("Debe quedar al menos una sede");return}
+    if(o&&o.foto){deletedFotos.add(o.foto);dirtyFotos.delete(o.foto)}
+    if(o&&o.items)o.items.forEach(x=>{if(x.foto){deletedFotos.add(x.foto);dirtyFotos.delete(x.foto)}});
+    arr.splice(i,1);markDirty();render();toast(`Se borró ${name}. Guarda para confirmar.`)}
+  else if(a==="additem"){const arr=get(list),kind=t.dataset.kind;const o={id:uid("p"),nombre:"",desc:"",art:{t:kind}};
+    if(list==="pizzas.especiales")o.precios={};else if(list.startsWith("categorias"))o.precio="";
+    arr.push(o);markDirty();render();const ins=document.querySelectorAll(`[data-bind="${list}.${arr.length-1}.nombre"]`);if(ins[0]){ins[0].scrollIntoView({block:"center"});ins[0].focus()}}
+  else if(a==="addcat"){D.categorias.push({id:uid("c"),nombre:"Nueva categoría",items:[]});markDirty();render();window.scrollTo(0,document.body.scrollHeight)}
+  else if(a==="addsize"){D.pizzas.tamanos.push({id:uid("t"),nombre:"",sabores:1,precio:""});markDirty();render()}
+  else if(a==="addsede"){D.sedes.push({nombre:"",wa:""});markDirty();render()}
+  else if(a==="addopt"){const o=get(t.dataset.path);if(!o.opciones||!o.opciones.length){o.opciones=[{nombre:"",precio:o.precio||""}];delete o.precio}else o.opciones.push({nombre:"",precio:""});markDirty();render()}
+  else if(a==="noopts"){const o=get(t.dataset.path);o.precio=(o.opciones&&o.opciones[0]&&o.opciones[0].precio)||"";delete o.opciones;markDirty();render()}
+  else if(a==="nophoto"){const o=get(t.dataset.path);if(o.foto){deletedFotos.add(o.foto);dirtyFotos.delete(o.foto);delete o.foto}markDirty();render()}
+  else if(a==="copyjson"){try{await navigator.clipboard.writeText(JSON.stringify(D,null,2));toast("Respaldo copiado")}catch(err){toast("No se pudo copiar")}}
+  else if(a==="reset"){if(t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="¿Seguro? Toca otra vez";return}
+    store.del("napoles_carta_borrador");store.del("napoles_fotos_borrador");D=norm(clone(window.CARTA_EJEMPLO));FOTOS={};dirty=false;render();toast("Se restauró la carta de ejemplo")}
+  else if(a==="logout"){if(dirty&&t.dataset.confirm!=="1"){t.dataset.confirm="1";t.textContent="Hay cambios sin guardar. ¿Salir?";return}
+    const f=await NAPOLES.firebase();dirty=false;await f.authM.signOut(f.auth)}
+});
+
+/* ---------- Validar y guardar ---------- */
+function problems(){
+  const e=[],p=D.pizzas;
+  p.tamanos.forEach((t,i)=>{if(!String(t.nombre).trim())e.push(`Tamaño ${i+1} sin nombre`);if(!(+t.precio>0))e.push(`Tamaño "${t.nombre||i+1}" sin precio`)});
+  p.sabores.forEach((o,i)=>{if(!String(o.nombre).trim())e.push(`Sabor ${i+1} sin nombre`)});
+  p.especiales.forEach((o,i)=>{if(!String(o.nombre).trim())e.push(`Sabor especial ${i+1} sin nombre`);if(!Object.keys(o.precios||{}).length)e.push(`"${o.nombre||"Especial"}" sin ningún precio`)});
+  D.categorias.forEach(c=>{if(!String(c.nombre).trim())e.push("Hay una categoría sin nombre");
+    c.items.forEach((o,i)=>{if(!String(o.nombre).trim())e.push(`${c.nombre}: producto ${i+1} sin nombre`);
+      if(o.opciones){if(o.opciones.some(x=>!String(x.nombre).trim()||!(+x.precio>0)))e.push(`"${o.nombre}": revisa las opciones (nombre y precio)`)}
+      else if(!(+o.precio>0))e.push(`"${o.nombre||"Producto"}" sin precio`)})});
+  D.sedes.forEach(s=>{if(!String(s.nombre).trim())e.push("Hay una sede sin nombre");if(!/^57\d{10}$/.test(String(s.wa)))e.push(`WhatsApp de "${s.nombre||"sede"}" debe tener 10 dígitos`)});
+  return e;
+}
+async function save(){
+  if(saving)return;const pr=problems();
+  if(pr.length){toast("Revisa: "+pr.slice(0,3).join(" · ")+(pr.length>3?` (+${pr.length-3})`:""),5000);return}
+  // borrar fotos que ya no usa ningún producto
+  const used=new Set();JSON.stringify(D,(k,v)=>{if(k==="foto")used.add(v);return v});
+  Object.keys(FOTOS).forEach(id=>{if(!used.has(id)){deletedFotos.add(id);dirtyFotos.delete(id)}});
+  saving=true;render();
+  const data=clone(D);data.actualizado={por:USER?USER.email:"demo",fecha:new Date().toISOString()};
+  try{
+    if(FB){
+      const f=await NAPOLES.firebase();
+      await f.fs.setDoc(f.fs.doc(f.db,"carta","actual"),data);
+      for(const id of dirtyFotos)await f.fs.setDoc(f.fs.doc(f.db,"fotos",id),{data:FOTOS[id]});
+      for(const id of deletedFotos)await f.fs.deleteDoc(f.fs.doc(f.db,"fotos",id));
+    }else{
+      deletedFotos.forEach(id=>delete FOTOS[id]);
+      if(!store.set("napoles_carta_borrador",data))throw new Error("quota");
+      if(!store.set("napoles_fotos_borrador",FOTOS))toast("Las fotos son muy pesadas para el modo demo; la carta sí se guardó.",4000);
+    }
+    deletedFotos.forEach(id=>delete FOTOS[id]);dirtyFotos.clear();deletedFotos.clear();dirty=false;saving=false;render();toast("✓ Cambios guardados. La carta ya está actualizada.");
+  }catch(err){saving=false;render();markDirty();
+    toast(String(err&&err.code||"").includes("permission")?"Tu usuario no tiene permiso para editar la carta.":"No se pudo guardar. Revisa la conexión e intenta otra vez.",5000)}
+}
+
+/* ---------- Inicio ---------- */
+async function start(){
+  const r=await NAPOLES.loadCarta();D=norm(clone(r.carta));
+  FOTOS=await NAPOLES.loadFotos();dirty=false;render();
+  if(r.src==="ejemplo"&&FB)toast("Aún no hay carta guardada: estás viendo la de ejemplo. Edítala y guarda.",5000);
+}
+(async function(){
+  if(!FB){start();return}
+  try{const f=await NAPOLES.firebase();
+    f.authM.onAuthStateChanged(f.auth,u=>{USER=u;if(u)start();else renderLogin()})}
+  catch(e){$("#app").innerHTML=`<p class="login err">No se pudo conectar con Firebase. Revisa la configuración en firebase-config.js.</p>`}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+// AGREGAR estas reglas a las que YA tiene el aplicativo de cierre.
+// No borres las reglas actuales: pega los dos bloques "match" y la función
+// dentro de "match /databases/{database}/documents { ... }".
+
+    // ---- Carta digital ----
+    function esEditorCarta() {
+      return request.auth != null
+        && request.auth.token.email in [
+          'correo-de-juan@gmail.com'      // ← cambia por los correos que pueden editar la carta
+        ];
+    }
+    match /carta/{doc} {
+      allow read: if true;              // cualquier cliente puede ver la carta
+      allow write: if esEditorCarta();  // solo los correos de la lista la editan
+    }
+    match /fotos/{foto} {
+      allow read: if true;
+      allow write: if esEditorCarta();
+    }
