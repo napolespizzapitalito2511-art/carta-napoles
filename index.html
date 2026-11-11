@@ -9,9 +9,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#17110e; --card:#241b16; --card2:#2d221c; --line:#3a2c24;
-    --red:#e0352b; --red-d:#b8261e; --cheese:#f6c445; --cream:#f7ecd9;
-    --muted:#b9a898; --basil:#5aa653;
+    --bg:#17110e; --card:#241b16; --red:#e0352b; --cheese:#f6c445; --cream:#f7ecd9; --basil:#5aa653; --titulo:"Lilita One";
+    --card2:color-mix(in srgb,var(--card),#fff 5%); --line:color-mix(in srgb,var(--card),#fff 12%);
+    --muted:color-mix(in srgb,var(--cream) 68%,var(--bg)); --sel:color-mix(in srgb,var(--red) 22%,var(--card2));
+    --artbg:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--card),#fff 9%),color-mix(in srgb,var(--bg),#000 25%));
     --bar-h:64px; --radius:18px;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -23,21 +24,26 @@
   .wrap{max-width:720px;margin:0 auto}
 
   header.hero{position:relative;overflow:hidden;background:var(--red);padding:28px 20px 22px}
-  header.hero::before{content:"";position:absolute;inset:0;opacity:.16;background:repeating-conic-gradient(#fff 0 25%,transparent 0 50%) 0 0/36px 36px}
+  header.hero::before{content:"";position:absolute;inset:0;opacity:.16;background:var(--patron,repeating-conic-gradient(#fff 0 25%,transparent 0 50%) 0 0/36px 36px)}
+  header.hero.portada{background:var(--red) center/cover no-repeat;background-image:var(--portada-img)}
+  header.hero.portada::before{display:none}
+  header.hero.portada::after{height:100%;background:linear-gradient(rgba(0,0,0,.15),rgba(0,0,0,.6))}
+  .logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+  .logo.img{background:#fff;overflow:hidden}
   header.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(transparent,rgba(0,0,0,.25))}
   .hero-in{position:relative;z-index:1;display:flex;align-items:center;gap:16px}
   .logo{flex:none;width:84px;height:84px;border-radius:50%;background:var(--cream);display:grid;place-items:center;box-shadow:0 0 0 5px rgba(255,255,255,.25),0 8px 20px rgba(0,0,0,.3)}
-  .logo span{font-family:"Lilita One";font-size:46px;color:var(--red);line-height:1;margin-top:4px}
-  .brand h1{margin:0;font-family:"Lilita One";font-weight:400;font-size:clamp(28px,7vw,40px);line-height:1;letter-spacing:.5px;text-shadow:0 3px 0 rgba(0,0,0,.2)}
+  .logo span{font-family:var(--titulo),"Lilita One",cursive;font-size:46px;color:var(--red);line-height:1;margin-top:4px}
+  .brand h1{margin:0;font-family:var(--titulo),"Lilita One",cursive;font-weight:400;font-size:clamp(28px,7vw,40px);line-height:1;letter-spacing:.5px;text-shadow:0 3px 0 rgba(0,0,0,.2)}
   .brand p{margin:6px 0 0;font-weight:700;opacity:.92}
 
-  .status{display:flex;align-items:center;gap:10px;padding:10px 20px;background:#0f0b09;border-bottom:1px solid var(--line);font-weight:700;font-size:15px}
+  .status{display:flex;align-items:center;gap:10px;padding:10px 20px;background:color-mix(in srgb,var(--bg),#000 35%);border-bottom:1px solid var(--line);font-weight:700;font-size:15px}
   .dot{width:10px;height:10px;border-radius:50%;background:#e45b52;box-shadow:0 0 0 4px rgba(228,91,82,.18)}
   .status.open .dot{background:var(--basil);box-shadow:0 0 0 4px rgba(90,166,83,.2)}
   .status small{color:var(--muted);font-weight:600}
   .demo{background:#3b2a12;color:var(--cheese);font-size:13px;font-weight:700;text-align:center;padding:6px 12px}
 
-  .bar{position:sticky;top:0;z-index:20;background:rgba(23,17,14,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .bar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .bar-in{display:flex;align-items:center;gap:8px;height:var(--bar-h);padding:0 12px}
   .icon-btn{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;background:var(--card)}
   .icon-btn svg{width:20px;height:20px}
@@ -54,7 +60,7 @@
   main{padding:8px 14px 130px;min-height:40vh}
   .loading{color:var(--muted);text-align:center;padding:60px 10px;font-weight:700}
   section.cat{padding-top:18px;scroll-margin-top:calc(var(--bar-h) + 8px)}
-  .cat h2{margin:6px 4px 12px;font-family:"Lilita One";font-weight:400;font-size:26px;color:var(--red);letter-spacing:.4px;display:flex;align-items:baseline;gap:8px}
+  .cat h2{margin:6px 4px 12px;font-family:var(--titulo),"Lilita One",cursive;font-weight:400;font-size:26px;color:var(--red);letter-spacing:.4px;display:flex;align-items:baseline;gap:8px}
   .cat h2 small{font-family:Nunito;font-size:14px;color:var(--muted);font-weight:700}
   .cat .sub{margin:-8px 4px 12px;color:var(--muted);font-size:14px}
   .cat h4{margin:18px 4px 10px;font-size:14px;text-transform:uppercase;letter-spacing:.5px;color:var(--cheese)}
@@ -63,12 +69,13 @@
   .sz{flex:1 0 108px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 8px;text-align:center}
   .sz b{display:block;font-size:14px;text-transform:uppercase;letter-spacing:.3px}
   .sz span{display:block;font-weight:800;font-size:17px;color:var(--cheese)}
-  .sz small{color:var(--muted);font-weight:700;font-size:12.5px}
+  .sz small{display:block;color:var(--muted);font-weight:700;font-size:12.5px}
+  .sz small.pers{color:var(--cream);margin-top:2px}
   .card{display:flex;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px;margin-bottom:12px;transition:transform .15s,border-color .2s}
   .card:active{transform:scale(.99)}
-  .card:hover{border-color:#5a4436}
+  .card:hover{border-color:color-mix(in srgb,var(--line),#fff 15%)}
   .card.off{opacity:.55;cursor:not-allowed}
-  .art{flex:none;width:104px;height:104px;border-radius:14px;background:radial-gradient(circle at 50% 45%,#3a2b22,#1a120e);display:grid;place-items:center;overflow:hidden}
+  .art{flex:none;width:104px;height:104px;border-radius:14px;background:var(--artbg);display:grid;place-items:center;overflow:hidden}
   .art svg{width:90%;height:90%}
   .art img,.big-art img,.mini img{width:100%;height:100%;object-fit:cover}
   .info{flex:1;min-width:0;display:flex;flex-direction:column}
@@ -85,7 +92,7 @@
   .tag.off{background:#555;color:#fff}
   .empty{display:none;text-align:center;color:var(--muted);padding:40px 10px}
 
-  .cartbar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(15,11,9,.95) 30%);pointer-events:none;transform:translateY(120%);transition:transform .25s}
+  .cartbar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,color-mix(in srgb,var(--bg),#000 30%) 30%);pointer-events:none;transform:translateY(120%);transition:transform .25s}
   .cartbar.show{transform:none}
   .cartbar button{pointer-events:auto;max-width:692px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--red);color:#fff;border-radius:16px;padding:16px 18px;font-weight:800;font-size:16px;box-shadow:0 10px 26px rgba(0,0,0,.45)}
   .count{background:#fff;color:var(--red);border-radius:999px;min-width:28px;height:28px;display:inline-grid;place-items:center;padding:0 8px;margin-right:8px}
@@ -95,18 +102,18 @@
   .sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;max-width:720px;margin:0 auto;max-height:92vh;display:flex;flex-direction:column;background:var(--card);border-radius:22px 22px 0 0;border:1px solid var(--line);border-bottom:0;transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
   .sheet.show{transform:none}
   .sheet-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px 10px}
-  .sheet-h h3{margin:0;font-family:"Lilita One";font-weight:400;font-size:24px}
+  .sheet-h h3{margin:0;font-family:var(--titulo),"Lilita One",cursive;font-weight:400;font-size:24px}
   .close{width:40px;height:40px;border-radius:50%;background:var(--card2);font-size:22px;line-height:1;flex:none}
   .sheet-b{overflow-y:auto;padding:4px 18px 18px;flex:1}
   .sheet-f{padding:12px 18px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--card)}
-  .big-art{height:190px;border-radius:16px;background:radial-gradient(circle at 50% 45%,#3a2b22,#140e0b);display:grid;place-items:center;margin-bottom:14px;overflow:hidden}
+  .big-art{height:190px;border-radius:16px;background:var(--artbg);display:grid;place-items:center;margin-bottom:14px;overflow:hidden}
   .big-art svg{height:88%}
   .p-desc{color:var(--muted);margin:0 0 6px}
   .label{font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.4px;color:var(--cheese);margin:16px 0 8px}
   .opts{display:grid;gap:8px}
   .opt{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--card2);font-weight:700;cursor:pointer}
   .opt input{accent-color:var(--red);width:20px;height:20px;margin:0 10px 0 0;flex:none}
-  .opt:has(input:checked){border-color:var(--red);background:#3a1f1a}
+  .opt:has(input:checked){border-color:var(--red);background:var(--sel)}
   .opt .l{display:flex;align-items:center}
   .opt .l small{display:block;color:var(--muted);font-weight:700;font-size:12.5px}
   .fchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
@@ -120,13 +127,13 @@
   textarea,input.f,select.f{width:100%;border-radius:12px;border:1.5px solid var(--line);background:var(--card2);padding:12px 14px;outline:none;resize:vertical}
   textarea:focus,input.f:focus,select.f:focus{border-color:var(--cheese)}
   .primary{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--red);color:#fff;font-weight:800;font-size:17px;border-radius:14px;padding:16px;text-decoration:none}
-  .primary:disabled{background:#5a2a25;color:#d9b9b2;cursor:not-allowed}
+  .primary:disabled{background:color-mix(in srgb,var(--red) 35%,var(--card));color:var(--muted);cursor:not-allowed}
   .primary.wa{background:#1fa855}
   .primary.wa svg{width:22px;height:22px}
   .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 
   .line{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
-  .line .mini{flex:none;width:56px;height:56px;border-radius:12px;background:radial-gradient(circle,#3a2b22,#1a120e);display:grid;place-items:center;overflow:hidden}
+  .line .mini{flex:none;width:56px;height:56px;border-radius:12px;background:var(--artbg);display:grid;place-items:center;overflow:hidden}
   .line .mini svg{width:88%;height:88%}
   .line .t{flex:1;min-width:0}
   .line .t b{display:block;font-weight:800}
@@ -138,7 +145,7 @@
   .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .seg label{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card2);font-weight:800;text-align:center;cursor:pointer}
   .seg input{position:absolute;opacity:0;pointer-events:none}
-  .seg label:has(input:checked){border-color:var(--red);background:#3a1f1a}
+  .seg label:has(input:checked){border-color:var(--red);background:var(--sel)}
   .grid2{display:grid;gap:10px}
   .err{color:#ff8a80;font-size:14px;font-weight:700;margin-top:10px;display:none}
   details.prev{margin-top:14px;background:var(--card2);border-radius:12px;padding:10px 12px}
@@ -304,8 +311,8 @@ function buildIdx(){
   (C.categorias||[]).forEach(c=>(c.items||[]).forEach(o=>IDX[o.id]={k:"item",o,cat:c}));
 }
 function sizesFor(k,o){
-  if(k==="sabor")return (P().tamanos||[]).map(t=>({id:t.id,nombre:t.nombre,precio:+t.precio,sabores:+t.sabores||1}));
-  if(k==="esp")return (P().tamanos||[]).filter(t=>o.precios&&o.precios[t.id]!=null&&o.precios[t.id]!=="").map(t=>({id:t.id,nombre:t.nombre,precio:+o.precios[t.id],sabores:1}));
+  if(k==="sabor")return (P().tamanos||[]).map(t=>({id:t.id,nombre:t.nombre,precio:+t.precio,sabores:+t.sabores||1,personas:t.personas}));
+  if(k==="esp")return (P().tamanos||[]).filter(t=>o.precios&&o.precios[t.id]!=null&&o.precios[t.id]!=="").map(t=>({id:t.id,nombre:t.nombre,precio:+o.precios[t.id],sabores:1,personas:t.personas}));
   if(o.opciones&&o.opciones.length)return o.opciones.map((x,i)=>({id:"o"+i,nombre:x.nombre,precio:+x.precio,sabores:1}));
   return null;
 }
@@ -343,7 +350,12 @@ function renderMenu(){
   const n=C.negocio||{},p=P();
   document.title=`${n.nombre||"Carta"} · Carta`;
   $("#brandName").textContent=n.nombre||"";$("#brandTag").textContent=n.lema||"";
-  $(".logo span").textContent=(n.nombre||"N").trim().charAt(0).toUpperCase();
+  const d=NAPOLES.diseno(C);NAPOLES.aplicarDiseno(d);
+  const hero=$("header.hero"),logo=$(".logo");
+  document.documentElement.style.setProperty("--patron",NAPOLES.patronCSS(d.patron));
+  if(d.portada&&FOTOS[d.portada]){hero.classList.add("portada");hero.style.setProperty("--portada-img",`url("${FOTOS[d.portada]}")`)}else hero.classList.remove("portada");
+  if(d.logo&&FOTOS[d.logo]){logo.classList.add("img");logo.innerHTML=`<img src="${FOTOS[d.logo]}" alt="${esc(n.nombre||"")}">`}
+  else{logo.classList.remove("img");logo.innerHTML=`<span>${esc((n.nombre||"N").trim().charAt(0).toUpperCase())}</span>`}
   $("#demo").style.display=n.demo?"":"none";
   const secs=sections();
   $("#chips").innerHTML=secs.map(s=>`<button class="chip" data-cat="${esc(s.id)}">${esc(s.nombre)}</button>`).join("");
@@ -352,7 +364,7 @@ function renderMenu(){
   if(secs.length&&secs[0].id==="pizzas"){
     html+=`<section class="cat" id="cat-pizzas" data-cat="pizzas">
       <h2>${esc(p.nombre||"Pizzas")} <small>${secs[0].n}</small></h2>${p.sub?`<p class="sub">${esc(p.sub)}</p>`:""}
-      <div class="sizes">${(p.tamanos||[]).map(t=>`<div class="sz"><b>${esc(t.nombre)}</b><span>${money(t.precio)}</span><small>${+t.sabores>1?`hasta ${t.sabores} sabores`:"1 sabor"}</small></div>`).join("")}</div>
+      <div class="sizes">${(p.tamanos||[]).map(t=>`<div class="sz"><b>${esc(t.nombre)}</b><span>${money(t.precio)}</span><small>${+t.sabores>1?`hasta ${t.sabores} sabores`:"1 sabor"}</small>${t.personas?`<small class="pers">👥 ${esc(NAPOLES.personasTxt(t.personas))}</small>`:""}</div>`).join("")}</div>
       <div class="cards">${(p.sabores||[]).map(o=>card("sabor",o)).join("")}</div>
       ${(p.especiales||[]).length?`<h4>⭐ Sabores especiales · un solo sabor</h4><div class="cards">${p.especiales.map(o=>card("esp",o)).join("")}</div>`:""}
     </section>`;
@@ -407,7 +419,7 @@ function renderSizes(){
   const sz=curSizes();
   if(!sz){$("#pSizesWrap").style.display="none";$("#pSizes").innerHTML="";return}
   $("#pSizesWrap").style.display="";
-  $("#pSizes").innerHTML=sz.map((s,k)=>`<label class="opt"><span class="l"><input type="radio" name="size" value="${k}" ${k===sel.size?"checked":""}><span>${esc(s.nombre)}${cur.k==="sabor"?`<small>${s.sabores>1?`hasta ${s.sabores} sabores`:"1 sabor"}</small>`:""}</span></span><span>${money(s.precio)}</span></label>`).join("");
+  $("#pSizes").innerHTML=sz.map((s,k)=>`<label class="opt"><span class="l"><input type="radio" name="size" value="${k}" ${k===sel.size?"checked":""}><span>${esc(s.nombre)}${cur.k==="sabor"?`<small>${s.sabores>1?`hasta ${s.sabores} sabores`:"1 sabor"}${s.personas?` · 👥 ${esc(NAPOLES.personasTxt(s.personas))}`:""}</small>`:(s.personas?`<small>👥 ${esc(NAPOLES.personasTxt(s.personas))}</small>`:"")}</span></span><span>${money(s.precio)}</span></label>`).join("");
 }
 function renderCombo(){
   const box=$("#pCombo");
@@ -555,7 +567,7 @@ function bind(){
   syncForm();if(f&&f.sede!=null&&[...$("#fSede").options].some(o=>o.value===f.sede)){$("#fSede").value=f.sede;updateMsg()}
   renderCart();spy();
   setInterval(()=>{renderStatus();if(openSheet&&openSheet.id==="cSheet")syncForm()},60000);
-  NAPOLES.loadFotos().then(fx=>{if(fx&&Object.keys(fx).length){FOTOS=fx;const y=window.scrollY;renderMenu();filter($("#q").value);renderCart();window.scrollTo(0,y)}});
+  NAPOLES.loadFotos().then(fx=>{if(fx&&Object.keys(fx).length){FOTOS=fx;const y=window.scrollY;renderMenu();filter($("#q").value);renderCart();window.scrollTo(0,y);spy.cur=null;spy()}});
 })();
 </script>
 </body>

@@ -57,6 +57,29 @@ N.loadFotos = async function(){
   return N.store.get("napoles_fotos_borrador") || {};
 };
 
+/* ---------- Diseño (colores, logo, letra) ---------- */
+N.DISENO_BASE = { principal:"#e0352b", acento:"#f6c445", fondo:"#17110e", tarjeta:"#241b16", texto:"#f7ecd9", patron:"cuadros", letra:"Lilita One", logo:"", portada:"" };
+N.LETRAS = ["Lilita One","Fredoka","Pacifico","Lobster","Bebas Neue","Righteous","Baloo 2","Playfair Display"];
+N.PATRONES = { cuadros:"Mantel de cuadros", puntos:"Puntos", rayas:"Rayas", ninguno:"Liso" };
+N.diseno = c => Object.assign({}, N.DISENO_BASE, (c && c.diseno) || {});
+N.aplicarDiseno = function(d, root){
+  root = root || document.documentElement;
+  [["--red",d.principal],["--cheese",d.acento],["--bg",d.fondo],["--card",d.tarjeta],["--cream",d.texto]].forEach(([k,v])=>{ if(v) root.style.setProperty(k,v); });
+  root.style.setProperty("--titulo", `"${d.letra||"Lilita One"}"`);
+  if (d.letra && d.letra !== "Lilita One") {
+    const id = "font-" + N.slug(d.letra);
+    if (!document.getElementById(id)) { const l = document.createElement("link"); l.id = id; l.rel = "stylesheet";
+      l.href = "https://fonts.googleapis.com/css2?family=" + encodeURIComponent(d.letra).replace(/%20/g,"+") + ":wght@400;700&display=swap"; document.head.appendChild(l); }
+  }
+};
+N.patronCSS = function(p){
+  if (p === "puntos") return "radial-gradient(rgba(255,255,255,.35) 2px,transparent 2.5px) 0 0/18px 18px";
+  if (p === "rayas") return "repeating-linear-gradient(45deg,rgba(255,255,255,.5) 0 10px,transparent 10px 24px)";
+  if (p === "ninguno") return "none";
+  return "repeating-conic-gradient(#fff 0 25%,transparent 0 50%) 0 0/36px 36px";
+};
+N.personasTxt = v => { v = String(v == null ? "" : v).trim(); if (!v) return ""; return /^1$/.test(v) ? "1 persona" : `${v} personas`; };
+
 /* ---------- Ilustraciones SVG (cuando no hay foto) ---------- */
 function rng(seed){ seed = String(seed || "x"); let h = 1779033703 ^ seed.length;
   for (let i = 0; i < seed.length; i++){ h = Math.imul(h ^ seed.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; }

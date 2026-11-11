@@ -7,6 +7,10 @@ window.CARTA_EJEMPLO = {
     pagos: ["Efectivo", "Nequi", "Transferencia bancaria", "Datáfono (tarjeta)"],
     demo: true
   },
+  diseno: {
+    principal: "#e0352b", acento: "#f6c445", fondo: "#17110e", tarjeta: "#241b16", texto: "#f7ecd9",
+    patron: "cuadros", letra: "Lilita One", logo: "", portada: ""
+  },
   sedes: [
     { nombre: "Nápoles Centro",  wa: "573203387070" },
     { nombre: "Nápoles Solarte", wa: "573174000531" },
@@ -16,11 +20,11 @@ window.CARTA_EJEMPLO = {
     nombre: "Pizzas",
     sub: "Masa artesanal preparada en casa. Elige el sabor, el tamaño y si quieres combinar.",
     tamanos: [
-      { id: "porcion",  nombre: "Porción",  sabores: 1, precio: 6000 },
-      { id: "personal", nombre: "Personal", sabores: 2, precio: 16000 },
-      { id: "junior",   nombre: "Junior",   sabores: 2, precio: 24000 },
-      { id: "mediana",  nombre: "Mediana",  sabores: 2, precio: 32000 },
-      { id: "familiar", nombre: "Familiar", sabores: 3, precio: 46000 }
+      { id: "porcion",  nombre: "Porción",  sabores: 1, precio: 6000, personas: "1" },
+      { id: "personal", nombre: "Personal", sabores: 2, precio: 16000, personas: "1" },
+      { id: "junior",   nombre: "Junior",   sabores: 2, precio: 24000, personas: "2" },
+      { id: "mediana",  nombre: "Mediana",  sabores: 2, precio: 32000, personas: "2-3" },
+      { id: "familiar", nombre: "Familiar", sabores: 3, precio: 46000, personas: "4-5" }
     ],
     sabores: [
       { id: "hawaiana", nombre: "Hawaiana", desc: "Salsa de la casa, mozzarella, jamón y piña.", tag: "La favorita", art: { t: "pizza", c: ["#f2a7a0", "#f7d64a"] } },
