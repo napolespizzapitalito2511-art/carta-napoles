@@ -60,6 +60,7 @@
   .opts-list{display:grid;gap:6px}
   .opt-row{display:grid;grid-template-columns:1fr 130px auto;gap:6px}
   .prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+  .adds{border-top:1px dashed var(--line);padding-top:8px}
   .add{width:100%;padding:12px;border-radius:12px;border:1.5px dashed #5a4436;color:var(--cheese);font-weight:800}
   .login{max-width:380px;margin:60px auto;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;display:grid;gap:12px}
   .login h1{margin:0;font-family:"Lilita One";font-weight:400;color:var(--red);font-size:26px}
@@ -152,6 +153,10 @@ function photoBtns(path,o,key,txt){key=key||"foto";txt=txt||"foto";const has=o[k
 function artSelect(path,o){const t=(o.art&&o.art.t)||"bowl";return `<label class="fl">Ilustración (si no hay foto)<select class="f" data-art="${path}">${Object.entries(NAPOLES.ARTES).map(([k,v])=>`<option value="${k}" ${k===t?"selected":""}>${v}</option>`).join("")}</select></label>`}
 function agotado(path,o){return `<label class="sw ${o.agotado?"on":""}"><input type="checkbox" data-bool="${path}.agotado" ${o.agotado?"checked":""}> Agotado hoy</label>`}
 
+function addsEditor(path,owner,title,help){const l=owner.adiciones||[];
+  return `<div class="adds"><label class="fl">${title||"Adiciones (opcional)"}</label>${help?`<small class="hh" style="margin:-2px 0 6px">${help}</small>`:""}
+    <div class="opts-list">${l.map((x,j)=>`<div class="opt-row">${input(`${path}.adiciones.${j}.nombre`,"Ej: Queso extra")}${input(`${path}.adiciones.${j}.precio`,"Precio","num")}<button class="btn sm dan" data-act="del" data-list="${path}.adiciones" data-i="${j}">✕</button></div>`).join("")}
+    <div><button class="btn sm" data-act="addadd" data-path="${path}">+ Agregar adición</button></div></div></div>`}
 function itemEditor(list,i,n,o,kind){
   const path=`${list}.${i}`;
   let extra="";
@@ -169,6 +174,7 @@ function itemEditor(list,i,n,o,kind){
       <div class="g3"><label class="fl">Nombre${input(path+".nombre","Nombre del producto")}</label><label class="fl">Etiqueta${input(path+".tag","Ej: Nuevo")}</label>${kind==="sabor"||kind==="esp"?"<span></span>":artSelect(path,o)}</div>
       <label class="fl">Descripción<textarea class="f" rows="2" data-bind="${path}.desc" placeholder="Ingredientes, gramaje…">${esc(o.desc||"")}</textarea></label>
       ${extra}
+      ${kind==="item"?addsEditor(path,o,"Adiciones de este producto (opcional)","El cliente las puede marcar al pedir; se suman al precio."):""}
       <div class="tools">${agotado(path,o)}<span style="flex:1"></span>${tools(list,i,n)}</div>
     </div></div>`;
 }
@@ -182,6 +188,8 @@ function renderPizzas(){
       <td>${input(`pizzas.tamanos.${i}.personas`,"Ej: 2-3")}</td>
       <td>${input(`pizzas.tamanos.${i}.precio`,"Precio","num")}</td><td><div class="tools">${tools("pizzas.tamanos",i,p.tamanos.length)}</div></td></tr>`).join("")}
   </table><button class="add" data-act="addsize" style="margin-top:8px">+ Agregar tamaño</button></div>
+  <h2>Adiciones para pizzas</h2><p class="help">Aplican a todos los sabores y tamaños. El cliente las marca al pedir y se suman al precio de la pizza.</p>
+  <div class="box">${addsEditor("pizzas",p,"Lista de adiciones")}</div>
   <h2>Sección de pizzas</h2>
   <div class="box g2"><label class="fl">Título${input("pizzas.nombre","Pizzas")}</label><label class="fl">Texto debajo del título${input("pizzas.sub","Ej: Masa artesanal…")}</label></div>
   <h2>Sabores (${p.sabores.length})</h2><p class="help">Se pueden combinar según el tamaño. Marca "Agotado hoy" si un sabor no está disponible.</p>
@@ -328,6 +336,7 @@ document.addEventListener("click",async e=>{
   else if(a==="addcat"){D.categorias.push({id:uid("c"),nombre:"Nueva categoría",items:[]});markDirty();render();window.scrollTo(0,document.body.scrollHeight)}
   else if(a==="addsize"){D.pizzas.tamanos.push({id:uid("t"),nombre:"",sabores:1,precio:""});markDirty();render()}
   else if(a==="addsede"){D.sedes.push({nombre:"",wa:""});markDirty();render()}
+  else if(a==="addadd"){const o=get(t.dataset.path);o.adiciones=o.adiciones||[];o.adiciones.push({nombre:"",precio:""});markDirty();render();const ins=document.querySelectorAll(`[data-bind="${t.dataset.path}.adiciones.${o.adiciones.length-1}.nombre"]`);if(ins[0])ins[0].focus()}
   else if(a==="addopt"){const o=get(t.dataset.path);if(!o.opciones||!o.opciones.length){o.opciones=[{nombre:"",precio:o.precio||""}];delete o.precio}else o.opciones.push({nombre:"",precio:""});markDirty();render()}
   else if(a==="noopts"){const o=get(t.dataset.path);o.precio=(o.opciones&&o.opciones[0]&&o.opciones[0].precio)||"";delete o.opciones;markDirty();render()}
   else if(a==="nophoto"){const o=get(t.dataset.path),key=t.dataset.key||"foto";if(o[key]){deletedFotos.add(o[key]);dirtyFotos.delete(o[key]);o[key]=""}markDirty();render()}
@@ -346,6 +355,9 @@ function problems(){
   p.tamanos.forEach((t,i)=>{if(!String(t.nombre).trim())e.push(`Tamaño ${i+1} sin nombre`);if(!(+t.precio>0))e.push(`Tamaño "${t.nombre||i+1}" sin precio`)});
   p.sabores.forEach((o,i)=>{if(!String(o.nombre).trim())e.push(`Sabor ${i+1} sin nombre`)});
   p.especiales.forEach((o,i)=>{if(!String(o.nombre).trim())e.push(`Sabor especial ${i+1} sin nombre`);if(!Object.keys(o.precios||{}).length)e.push(`"${o.nombre||"Especial"}" sin ningún precio`)});
+  const chkAdds=(o,name)=>(o.adiciones||[]).forEach(x=>{if(!String(x.nombre).trim()||!(+x.precio>0))e.push(`${name}: revisa las adiciones (nombre y precio)`)});
+  chkAdds(p,"Adiciones de pizzas");
+  D.categorias.forEach(c=>c.items.forEach(o=>chkAdds(o,`"${o.nombre||"Producto"}"`)));
   D.categorias.forEach(c=>{if(!String(c.nombre).trim())e.push("Hay una categoría sin nombre");
     c.items.forEach((o,i)=>{if(!String(o.nombre).trim())e.push(`${c.nombre}: producto ${i+1} sin nombre`);
       if(o.opciones){if(o.opciones.some(x=>!String(x.nombre).trim()||!(+x.precio>0)))e.push(`"${o.nombre}": revisa las opciones (nombre y precio)`)}

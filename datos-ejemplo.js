@@ -26,6 +26,12 @@ window.CARTA_EJEMPLO = {
       { id: "mediana",  nombre: "Mediana",  sabores: 2, precio: 32000, personas: "2-3" },
       { id: "familiar", nombre: "Familiar", sabores: 3, precio: 46000, personas: "4-5" }
     ],
+    adiciones: [
+      { nombre: "Queso extra", precio: 4000 },
+      { nombre: "Tocineta", precio: 3000 },
+      { nombre: "Champiñones", precio: 3000 },
+      { nombre: "Borde de queso", precio: 5000 }
+    ],
     sabores: [
       { id: "hawaiana", nombre: "Hawaiana", desc: "Salsa de la casa, mozzarella, jamón y piña.", tag: "La favorita", art: { t: "pizza", c: ["#f2a7a0", "#f7d64a"] } },
       { id: "pollo-champi", nombre: "Pollo con champiñones", desc: "Pollo desmechado, champiñones salteados y mozzarella.", art: { t: "pizza", c: ["#e9d3b0", "#8a6a4f"] } },
@@ -41,7 +47,8 @@ window.CARTA_EJEMPLO = {
   },
   categorias: [
     { id: "salchipapas", nombre: "Salchipapas", items: [
-      { id: "salchi-especial", nombre: "Salchipapa especial", desc: "Papa francesa, salchicha, carne, pollo, queso gratinado y salsas.", tag: "Recomendada", precio: 28000, art: { t: "fries" } },
+      { id: "salchi-especial", nombre: "Salchipapa especial", desc: "Papa francesa, salchicha, carne, pollo, queso gratinado y salsas.", tag: "Recomendada", precio: 28000, art: { t: "fries" },
+        adiciones: [{ nombre: "Huevos de codorniz", precio: 2000 }, { nombre: "Queso extra", precio: 3000 }, { nombre: "Maicitos", precio: 2000 }] },
       { id: "salchi-sencilla", nombre: "Salchipapa sencilla", desc: "Papa francesa, salchicha y salsas de la casa.", precio: 14000, art: { t: "fries" } }
     ]},
     { id: "picadas", nombre: "Picadas y patacones", items: [

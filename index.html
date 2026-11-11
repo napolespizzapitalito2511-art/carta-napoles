@@ -116,6 +116,11 @@
   .opt:has(input:checked){border-color:var(--red);background:var(--sel)}
   .opt .l{display:flex;align-items:center}
   .opt .l small{display:block;color:var(--muted);font-weight:700;font-size:12.5px}
+  .addrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card2);font-weight:700;cursor:pointer}
+  .addrow input{accent-color:var(--red);width:19px;height:19px;margin:0 10px 0 0;flex:none}
+  .addrow:has(input:checked){border-color:var(--red);background:var(--sel)}
+  .addrow .l{display:flex;align-items:center}
+  .addrow b{color:var(--cheese);white-space:nowrap}
   .fchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
   .fchip{padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card2);font-weight:800;font-size:14px}
   .fchip[aria-pressed="true"]{border-color:var(--red);background:var(--red);color:#fff}
@@ -223,6 +228,7 @@
     <p class="p-desc" id="pDesc"></p>
     <div id="pSizesWrap"><div class="label" id="pSizesLbl">Elige el tamaño</div><div class="opts" id="pSizes"></div></div>
     <div id="pCombo"></div>
+    <div id="pAdds"></div>
     <div class="label">Nota para la cocina (opcional)</div>
     <textarea id="pNote" rows="2" placeholder="Ej: sin cebolla, bien tostada…"></textarea>
   </div>
@@ -409,10 +415,10 @@ function openProduct(id){
   cur=e;qty=1;
   const sz=sizesFor(e.k,e.o);
   let def=0;if(sz&&e.k!=="item"){const m=sz.findIndex(s=>s.id==="mediana");def=m>=0?m:0}
-  sel={size:def,mode:"toda",extra:[]};
+  sel={size:def,mode:"toda",extra:[],adds:[]};
   $("#pName").textContent=e.o.nombre;$("#pDesc").textContent=e.o.desc||"";$("#pArt").innerHTML=art(e.o);$("#pNote").value="";
   $("#pSizesLbl").textContent=e.k==="item"?"Elige una opción":"Elige el tamaño";
-  renderSizes();renderCombo();updateAdd();show("#pSheet");
+  renderSizes();renderCombo();renderAdds();updateAdd();show("#pSheet");
 }
 function curSizes(){return sizesFor(cur.k,cur.o)}
 function renderSizes(){
@@ -437,7 +443,11 @@ function renderCombo(){
     ${sel.mode==="combo"?`<p class="hint" style="margin-top:12px"><b>${esc(cur.o.nombre)}</b> + elige ${max===1?"1 sabor más":"hasta "+max+" sabores más"} · <b>${sel.extra.length}/${max}</b></p>
       <div class="fchips">${others.map(o=>{const on=sel.extra.includes(o.id);return `<button class="fchip" data-flavor="${esc(o.id)}" aria-pressed="${on}" ${!on&&sel.extra.length>=max?"disabled":""}>${esc(o.nombre)}</button>`}).join("")}</div>`:""}`;
 }
-function unitPrice(){const sz=curSizes();return sz?sz[sel.size].precio:(+cur.o.precio||0)}
+function addsFor(){const l=cur.k==="item"?(cur.o.adiciones||[]):(P().adiciones||[]);return l.filter(a=>a&&String(a.nombre||"").trim())}
+function renderAdds(){const l=addsFor(),box=$("#pAdds");if(!l.length){box.innerHTML="";return}
+  box.innerHTML=`<div class="label">Adiciones (opcional)</div><div class="opts">${l.map((a,i)=>`<label class="addrow"><span class="l"><input type="checkbox" data-add="${i}" ${sel.adds.includes(i)?"checked":""}>${esc(a.nombre)}</span><b>+ ${money(a.precio)}</b></label>`).join("")}</div>`}
+function addsTotal(){const l=addsFor();return sel.adds.reduce((t,i)=>t+(+((l[i]||{}).precio)||0),0)}
+function unitPrice(){const sz=curSizes();return (sz?sz[sel.size].precio:(+cur.o.precio||0))+addsTotal()}
 function updateAdd(){
   $("#qVal").textContent=qty;const b=$("#pAdd");
   if(cur.k==="sabor"&&sel.mode==="combo"&&!sel.extra.length){b.disabled=true;b.textContent="Elige el otro sabor";return}
@@ -458,9 +468,10 @@ function addToCart(){
   if(cur.k==="sabor"){const ids=sel.mode==="combo"?[o.id,...sel.extra]:[o.id];const porc=/^porci/i.test(s.nombre);title=porc?`Porción de pizza`:`Pizza ${s.nombre}`;detail=porc?o.nombre:flavorText(ids)}
   else if(cur.k==="esp"){title=`Pizza ${s.nombre}`;detail=`${o.nombre} (especial)`}
   else if(s){detail=s.nombre}
-  const note=$("#pNote").value.trim(),price=unitPrice(),key=[o.id,title,detail,note,price].join("|");
+  const al=addsFor(),adds=sel.adds.slice().sort((a,b)=>a-b).map(i=>al[i]).filter(Boolean).map(a=>a.nombre);
+  const note=$("#pNote").value.trim(),price=unitPrice(),key=[o.id,title,detail,adds.join(","),note,price].join("|");
   const same=cart.find(l=>l.key===key);
-  if(same)same.qty+=qty;else cart.push({key,id:o.id,title,detail,note,qty,price});
+  if(same)same.qty+=qty;else cart.push({key,id:o.id,title,detail,adds,note,qty,price});
   saveCart();renderCart();hide();toast("✓ Agregado a tu pedido");
 }
 const subtotal=()=>cart.reduce((s,l)=>s+l.price*l.qty,0);
@@ -470,7 +481,7 @@ function renderCart(){
   $("#cCount").textContent=count();$("#cTotal").textContent=money(subtotal());$("#sub").textContent=money(subtotal());
   $("#lines").innerHTML=cart.length?cart.map((l,k)=>{const it=(IDX[l.id]||{}).o||{id:l.id};return `
     <div class="line"><div class="mini">${art(it)}</div>
-      <div class="t"><b>${esc(l.title)}</b>${l.detail?`<small>${esc(l.detail)}</small>`:""}${l.note?`<small>📝 ${esc(l.note)}</small>`:""}<small>${money(l.price)} c/u</small></div>
+      <div class="t"><b>${esc(l.title)}</b>${l.detail?`<small>${esc(l.detail)}</small>`:""}${l.adds&&l.adds.length?`<small>➕ ${esc(l.adds.join(", "))}</small>`:""}${l.note?`<small>📝 ${esc(l.note)}</small>`:""}<small>${money(l.price)} c/u</small></div>
       <div class="r"><b>${money(l.price*l.qty)}</b><div class="stepper"><button data-dec="${k}" aria-label="Quitar uno">−</button><span>${l.qty}</span><button data-inc="${k}" aria-label="Agregar uno">+</button></div></div>
     </div>`}).join(""):`<p class="hint" style="padding:20px 0;text-align:center">Tu pedido está vacío.</p>`;
   updateMsg();
@@ -506,7 +517,7 @@ function buildMsg(){
     L.push(`🏪 *Sede:* ${$("#fSede").value===""?"Por asignar (la más cercana)":sedeSel().nombre}`);
   }else L.push(`🏠 *Recoge en:* ${sedeSel().nombre}`);
   L.push("","*Pedido:*");
-  cart.forEach(l=>{L.push(`• ${l.qty} x ${l.title}${l.detail?` — ${l.detail}`:""} — ${money(l.price*l.qty)}`);if(l.note)L.push(`   _Nota: ${l.note}_`)});
+  cart.forEach(l=>{L.push(`• ${l.qty} x ${l.title}${l.detail?` — ${l.detail}`:""} — ${money(l.price*l.qty)}`);if(l.adds&&l.adds.length)L.push(`   ➕ Adiciones: ${l.adds.join(", ")}`);if(l.note)L.push(`   _Nota: ${l.note}_`)});
   L.push("",`*Subtotal: ${money(subtotal())}*`);
   if(dom)L.push("_Valor del domicilio por confirmar_");
   let pay=`💳 *Pago:* ${$("#fPay").value}`;const cash=$("#fCash").value.replace(/\D/g,"");
@@ -539,6 +550,7 @@ function bind(){
   $("#pCombo").addEventListener("change",e=>{if(e.target.name==="pmode"){sel.mode=e.target.value;if(sel.mode==="toda")sel.extra=[];renderCombo();updateAdd()}});
   $("#pCombo").addEventListener("click",e=>{const b=e.target.closest(".fchip");if(!b||b.disabled)return;const id=b.dataset.flavor,i=sel.extra.indexOf(id);
     if(i>=0)sel.extra.splice(i,1);else sel.extra.push(id);renderCombo();updateAdd()});
+  $("#pAdds").addEventListener("change",e=>{const i=e.target.dataset.add;if(i==null)return;const n=+i,k=sel.adds.indexOf(n);if(e.target.checked&&k<0)sel.adds.push(n);if(!e.target.checked&&k>=0)sel.adds.splice(k,1);updateAdd()});
   $("#qMinus").onclick=()=>{if(qty>1){qty--;updateAdd()}};
   $("#qPlus").onclick=()=>{if(qty<50){qty++;updateAdd()}};
   $("#pAdd").onclick=()=>{if(!$("#pAdd").disabled)addToCart()};
