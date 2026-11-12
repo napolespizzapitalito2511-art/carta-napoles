@@ -58,7 +58,7 @@ N.loadFotos = async function(){
 };
 
 /* ---------- Diseño (colores, logo, letra) ---------- */
-N.DISENO_BASE = { principal:"#e0352b", acento:"#f6c445", fondo:"#17110e", tarjeta:"#241b16", texto:"#f7ecd9", patron:"cuadros", letra:"Lilita One", logo:"", portada:"" };
+N.DISENO_BASE = { principal:"#e0352b", acento:"#f6c445", fondo:"#17110e", tarjeta:"#241b16", texto:"#f7ecd9", patron:"cuadros", letra:"Lilita One", logo:"", logoLargo:"", portada:"" };
 N.LETRAS = ["Lilita One","Fredoka","Pacifico","Lobster","Bebas Neue","Righteous","Baloo 2","Playfair Display"];
 N.PATRONES = { cuadros:"Mantel de cuadros", puntos:"Puntos", rayas:"Rayas", ninguno:"Liso" };
 N.diseno = c => Object.assign({}, N.DISENO_BASE, (c && c.diseno) || {});
@@ -80,6 +80,34 @@ N.patronCSS = function(p){
 };
 N.personasTxt = v => { v = String(v == null ? "" : v).trim(); if (!v) return ""; return /^1$/.test(v) ? "1 persona" : `${v} personas`; };
 
+/* ---------- Encuadre automático: recorta el fondo liso y centra el producto ---------- */
+N.autoEncuadre = function(dataURL, out){
+  out = out || 720;
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => {
+      const W = img.naturalWidth, H = img.naturalHeight, aw = 120, ah = Math.max(1, Math.round(aw * H / W));
+      const a = document.createElement("canvas"); a.width = aw; a.height = ah;
+      const ax = a.getContext("2d"); ax.drawImage(img, 0, 0, aw, ah);
+      const d = ax.getImageData(0, 0, aw, ah).data, px = (x, y) => { const k = (y * aw + x) * 4; return [d[k], d[k+1], d[k+2]]; };
+      const cs = [px(1,1), px(aw-2,1), px(1,ah-2), px(aw-2,ah-2)], bg = [0,1,2].map(i => Math.round(cs.reduce((t,c)=>t+c[i],0)/4));
+      let x0 = aw, y0 = ah, x1 = -1, y1 = -1;
+      for (let y = 0; y < ah; y++) for (let x = 0; x < aw; x++) { const c = px(x, y);
+        if (Math.abs(c[0]-bg[0]) + Math.abs(c[1]-bg[1]) + Math.abs(c[2]-bg[2]) > 55) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } }
+      if (x1 < 0 || (x1 - x0) < aw * 0.15) { res(dataURL); return; }
+      const sx = W / aw, bx0 = x0 * sx, by0 = y0 * sx, bw = (x1 - x0 + 1) * sx, bh = (y1 - y0 + 1) * sx;
+      const side = Math.max(bw, bh) * 1.08, cx = bx0 + bw / 2, cy = by0 + bh / 2, L = cx - side / 2, T = cy - side / 2;
+      const c = document.createElement("canvas"); c.width = out; c.height = out; const cx2 = c.getContext("2d");
+      cx2.fillStyle = `rgb(${bg.join(",")})`; cx2.fillRect(0, 0, out, out);
+      const k = out / side, sx0 = Math.max(0, L), sy0 = Math.max(0, T), sx1 = Math.min(W, L + side), sy1 = Math.min(H, T + side);
+      cx2.drawImage(img, sx0, sy0, sx1 - sx0, sy1 - sy0, (sx0 - L) * k, (sy0 - T) * k, (sx1 - sx0) * k, (sy1 - sy0) * k);
+      res(c.toDataURL("image/jpeg", 0.86));
+    };
+    img.onerror = () => res(dataURL);
+    img.src = dataURL;
+  });
+};
+
 /* ---------- Ilustraciones SVG (cuando no hay foto) ---------- */
 function rng(seed){ seed = String(seed || "x"); let h = 1779033703 ^ seed.length;
   for (let i = 0; i < seed.length; i++){ h = Math.imul(h ^ seed.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; }
@@ -88,7 +116,7 @@ const PALETA = ["#b8321f","#3f9a3a","#6b3b22","#f2a7a0","#f7d64a","#2b2b2b","#e9
 N.ARTES = { pizza:"Pizza", fries:"Papas / salchipapa", picada:"Picada", patacon:"Patacón", cone:"Helado", drink:"Bebida", bowl:"Adición / salsa", burger:"Hamburguesa" };
 
 N.art = function(item, fotos){
-  if (item && item.foto && fotos && fotos[item.foto]) return `<img src="${fotos[item.foto]}" alt="" loading="lazy">`;
+  if (item && item.foto && fotos && fotos[item.foto]) { const z = +item.zoom || 1; return `<img src="${fotos[item.foto]}" alt="" loading="lazy"${z !== 1 ? ` style="transform:scale(${z})"` : ""}>`; }
   const a = (item && item.art) || { t: "bowl" }, r = rng(item && item.id);
   if (a.t === "pizza") {
     const cols = (a.c && a.c.length) ? a.c : [PALETA[Math.floor(r()*8)], PALETA[Math.floor(r()*8)]];

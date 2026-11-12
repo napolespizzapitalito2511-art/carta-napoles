@@ -72,6 +72,10 @@
   .cf{display:grid;grid-template-columns:52px 1fr;gap:6px}
   .cf input[type=color]{width:52px;height:42px;padding:2px;border-radius:10px;border:1.5px solid var(--line);background:#1c1511;cursor:pointer}
   .thumb.round{border-radius:50%;background:#fff}
+  .g-logos{grid-template-columns:1fr 1fr}
+  .g-logos>div:nth-child(2){grid-column:1/-1}
+  .thumb.wide{width:100%;height:92px;background:repeating-conic-gradient(#3a2c24 0 25%,#2d221c 0 50%) 0 0/16px 16px}
+  .zsel{background:#1c1511;border:1px solid var(--line);border-radius:6px;color:var(--cream);font-weight:800;padding:2px 4px}
   .sw2{display:inline-block;width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.4)}
   .dz{display:grid;grid-template-columns:1fr 340px;gap:14px;align-items:start}
   .pv-sticky{position:sticky;top:130px}
@@ -175,7 +179,7 @@ function itemEditor(list,i,n,o,kind){
       <label class="fl">Descripción<textarea class="f" rows="2" data-bind="${path}.desc" placeholder="Ingredientes, gramaje…">${esc(o.desc||"")}</textarea></label>
       ${extra}
       ${kind==="item"?addsEditor(path,o,"Adiciones de este producto (opcional)","El cliente las puede marcar al pedir; se suman al precio."):""}
-      <div class="tools">${agotado(path,o)}<span style="flex:1"></span>${tools(list,i,n)}</div>
+      <div class="tools">${agotado(path,o)}${o.foto&&FOTOS[o.foto]?`<label class="sw">🔍 Acercar foto<select class="zsel" data-zoom="${path}">${[1,1.1,1.2,1.35,1.5].map(z=>`<option value="${z}" ${(+o.zoom||1)===z?"selected":""}>${Math.round(z*100)}%</option>`).join("")}</select></label><button class="btn sm" data-act="reframe" data-path="${path}" title="Recorta el fondo y centra el producto">✨ Encuadrar</button>`:""}<span style="flex:1"></span>${tools(list,i,n)}</div>
     </div></div>`;
 }
 
@@ -219,7 +223,7 @@ function colorField(key,label,help){const v=D.diseno[key];return `<label class="
 function previewHTML(){const d=D.diseno,n=D.negocio;const logo=d.logo&&FOTOS[d.logo]?`<img src="${FOTOS[d.logo]}">`:`<span>${esc((n.nombre||"N").charAt(0).toUpperCase())}</span>`;
   const por=d.portada&&FOTOS[d.portada];
   return `<div class="pv" style="--p:${d.principal};--a:${d.acento};--b:${d.fondo};--c:${d.tarjeta};--t:${d.texto};--f:'${esc(d.letra)}'">
-    <div class="pv-h" style="${por?`background:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),url('${FOTOS[d.portada]}') center/cover;`:""}"><i style="background:${por?"none":NAPOLES.patronCSS(d.patron)}"></i><div class="pv-l">${logo}</div><div><b>${esc(n.nombre||"")}</b><small>${esc(n.lema||"")}</small></div></div>
+    <div class="pv-h" style="${por?`background:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.6)),url('${FOTOS[d.portada]}') center/cover;`:""}"><i style="background:${por?"none":NAPOLES.patronCSS(d.patron)}"></i><div class="pv-l">${logo}</div><div>${d.logoLargo&&FOTOS[d.logoLargo]?`<img src="${FOTOS[d.logoLargo]}" style="height:34px;max-width:200px;object-fit:contain;display:block;margin-bottom:3px">`:`<b>${esc(n.nombre||"")}</b>`}<small>${esc(n.lema||"")}</small></div></div>
     <div class="pv-b"><span class="pv-chip">PIZZAS</span><span class="pv-chip off">BEBIDAS</span>
       <div class="pv-card"><div class="pv-art">${NAPOLES.art(D.pizzas.sabores[0]||{art:{t:"pizza"}},FOTOS)}</div><div><em>LA FAVORITA</em><b>HAWAIANA</b><small>Salsa de la casa, mozzarella…</small><strong>$32.000</strong></div><span class="pv-plus">+</span></div></div></div>`}
 function renderDiseno(){
@@ -228,11 +232,18 @@ function renderDiseno(){
   <div class="dz">
     <div>
       <div class="box fields">
-        <h3 class="h3">Logo y portada</h3>
-        <div class="g2">
+        <h3 class="h3">Logos y portada</h3>
+        <div class="g2 g-logos">
           <div><div class="thumb round">${d.logo&&FOTOS[d.logo]?`<img src="${FOTOS[d.logo]}">`:"<span style='font-size:13px;color:var(--muted)'>Sin logo<br>(se usa la letra)</span>"}</div>${photoBtns("diseno",d,"logo","logo")}<small class="hh">Mejor cuadrado y con fondo, PNG o JPG.</small></div>
+          <div><div class="thumb wide">${d.logoLargo&&FOTOS[d.logoLargo]?`<img src="${FOTOS[d.logoLargo]}" style="object-fit:contain">`:"<span style='font-size:13px;color:var(--muted)'>Sin logo largo<br>(se usa el nombre)</span>"}</div>${photoBtns("diseno",d,"logoLargo","logo largo")}<small class="hh">Logo horizontal, ideal PNG sin fondo. Al bajar en la carta se desliza a la derecha.</small></div>
           <div><div class="thumb">${d.portada&&FOTOS[d.portada]?`<img src="${FOTOS[d.portada]}">`:"<span style='font-size:13px;color:var(--muted)'>Sin portada<br>(color + patrón)</span>"}</div>${photoBtns("diseno",d,"portada","portada")}<small class="hh">Foto horizontal para el fondo del encabezado.</small></div>
         </div>
+      </div>
+      <div class="box fields">
+        <h3 class="h3">Fotos de productos</h3>
+        <label class="sw ${d.autoEncuadre!==false?"on":""}" style="justify-self:start"><input type="checkbox" data-bool="diseno.autoEncuadre" ${d.autoEncuadre!==false?"checked":""}> Encuadrar automáticamente las fotos nuevas</label>
+        <small class="hh">Recorta el fondo sobrante y deja el producto centrado y cerca.</small>
+        <div><button class="btn sm" data-act="reframeall">✨ Encuadrar todas las fotos que ya están</button></div>
       </div>
       <div class="box fields">
         <h3 class="h3">Combinaciones listas</h3>
@@ -309,11 +320,13 @@ document.addEventListener("input",e=>{
 document.addEventListener("change",async e=>{
   const t=e.target;
   if(t.dataset.bool){set(t.dataset.bool,t.checked);render()}
+  else if(t.dataset.zoom){const o=get(t.dataset.zoom);const z=+t.value;if(z===1)delete o.zoom;else o.zoom=z;markDirty();render()}
   else if(t.dataset.art){const o=get(t.dataset.art);o.art={t:t.value};markDirty();render()}
   else if(t.dataset.bind&&t.dataset.bind.startsWith("diseno.")&&t.tagName==="SELECT"){set(t.dataset.bind,t.value);NAPOLES.aplicarDiseno({letra:D.diseno.letra},document.createElement("div"));const pv=$("#pv");if(pv)pv.innerHTML=previewHTML()}
   else if(t.dataset.bind&&t.tagName==="SELECT"){render()}
   else if(t.dataset.photo&&t.files&&t.files[0]){
-    try{toast("Procesando imagen…");const key=t.dataset.key||"foto";const data=await resize(t.files[0],key==="logo"?{max:400,png:true}:key==="portada"?{max:1400}:null);const o=get(t.dataset.photo);
+    try{toast("Procesando imagen…");const key=t.dataset.key||"foto";let data=await resize(t.files[0],key==="logo"?{max:400,png:true}:key==="logoLargo"?{max:900,png:true}:key==="portada"?{max:1400}:{max:1000});
+      if(key==="foto"&&D.diseno.autoEncuadre!==false)data=await NAPOLES.autoEncuadre(data);const o=get(t.dataset.photo);
       if(o[key]){deletedFotos.add(o[key]);dirtyFotos.delete(o[key])}
       const id=uid("f_");FOTOS[id]=data;o[key]=id;dirtyFotos.add(id);deletedFotos.delete(id);markDirty();render();toast("Foto lista. Recuerda guardar.")}
     catch(err){toast("No se pudo leer la imagen")}}
@@ -336,6 +349,10 @@ document.addEventListener("click",async e=>{
   else if(a==="addcat"){D.categorias.push({id:uid("c"),nombre:"Nueva categoría",items:[]});markDirty();render();window.scrollTo(0,document.body.scrollHeight)}
   else if(a==="addsize"){D.pizzas.tamanos.push({id:uid("t"),nombre:"",sabores:1,precio:""});markDirty();render()}
   else if(a==="addsede"){D.sedes.push({nombre:"",wa:""});markDirty();render()}
+  else if(a==="reframe"){const o=get(t.dataset.path);if(!o.foto||!FOTOS[o.foto])return;t.textContent="Encuadrando…";FOTOS[o.foto]=await NAPOLES.autoEncuadre(FOTOS[o.foto]);dirtyFotos.add(o.foto);markDirty();render();toast("Foto encuadrada. Recuerda guardar.")}
+  else if(a==="reframeall"){const items=[...D.pizzas.sabores,...D.pizzas.especiales,...D.categorias.flatMap(c=>c.items)].filter(o=>o.foto&&FOTOS[o.foto]);t.disabled=true;let n=0;
+    for(const o of items){t.textContent=`Encuadrando ${++n}/${items.length}…`;FOTOS[o.foto]=await NAPOLES.autoEncuadre(FOTOS[o.foto]);dirtyFotos.add(o.foto)}
+    markDirty();render();toast(`✓ ${items.length} fotos encuadradas. Revisa y toca Guardar cambios.`,4000)}
   else if(a==="addadd"){const o=get(t.dataset.path);o.adiciones=o.adiciones||[];o.adiciones.push({nombre:"",precio:""});markDirty();render();const ins=document.querySelectorAll(`[data-bind="${t.dataset.path}.adiciones.${o.adiciones.length-1}.nombre"]`);if(ins[0])ins[0].focus()}
   else if(a==="addopt"){const o=get(t.dataset.path);if(!o.opciones||!o.opciones.length){o.opciones=[{nombre:"",precio:o.precio||""}];delete o.precio}else o.opciones.push({nombre:"",precio:""});markDirty();render()}
   else if(a==="noopts"){const o=get(t.dataset.path);o.precio=(o.opciones&&o.opciones[0]&&o.opciones[0].precio)||"";delete o.opciones;markDirty();render()}
@@ -370,7 +387,7 @@ async function save(){
   if(saving)return;const pr=problems();
   if(pr.length){toast("Revisa: "+pr.slice(0,3).join(" · ")+(pr.length>3?` (+${pr.length-3})`:""),5000);return}
   // borrar fotos que ya no usa ningún producto
-  const used=new Set();JSON.stringify(D,(k,v)=>{if((k==="foto"||k==="logo"||k==="portada")&&v)used.add(v);return v});
+  const used=new Set();JSON.stringify(D,(k,v)=>{if((k==="foto"||k==="logo"||k==="logoLargo"||k==="portada")&&v)used.add(v);return v});
   Object.keys(FOTOS).forEach(id=>{if(!used.has(id)){deletedFotos.add(id);dirtyFotos.delete(id)}});
   saving=true;render();
   const data=clone(D);data.actualizado={por:USER?USER.email:"demo",fecha:new Date().toISOString()};
